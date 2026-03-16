@@ -194,6 +194,7 @@ export default function NervousSystemTest() {
   const [emailError, setEmailError] = useState("")
   const [guideRequested, setGuideRequested] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
 
   useEffect(() => {
     track("test_started")
@@ -508,6 +509,7 @@ export default function NervousSystemTest() {
 
       track("email_submitted")
       setGuideRequested(true)
+      setShowSuccess(true)
     } catch (error) {
       console.error(error)
       setEmailError("Something went wrong. Please try again.")
@@ -524,6 +526,147 @@ export default function NervousSystemTest() {
     setEmailError("")
     setGuideRequested(false)
     setIsSaving(false)
+    setShowSuccess(false)
+  }
+
+  if (showSuccess) {
+    const { totalScore, categoryScores } = calculateResults()
+    const profile = getProfile(categoryScores)
+    const primaryIssue = getPrimaryIssue(categoryScores)
+    const { strongest, weakest } = getStrongestAndWeakest(categoryScores)
+    const routine = getRecommendedRoutine(categoryScores)
+    const scoreStyle = getScoreColorClasses(totalScore)
+
+    return (
+      <main className="min-h-screen bg-black px-4 py-6 text-white sm:px-6 sm:py-10">
+        <div className="mx-auto max-w-5xl">
+          <div className="rounded-[28px] border border-zinc-800 bg-zinc-950 p-5 shadow-2xl sm:p-8">
+            <div className="mb-6 inline-flex rounded-full border border-emerald-700/50 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300">
+              Report saved successfully
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+              <div>
+                <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+                  Your report is on the way
+                </h1>
+
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-zinc-300 sm:text-base">
+                  We’ve saved your result and your personalized guide is being prepared for <span className="font-medium text-white">{email}</span>. You can use the summary below right away.
+                </p>
+              </div>
+
+              <div className="flex justify-center lg:justify-end">
+                <div className={`relative ${scoreStyle.glow}`}>
+                  <div
+                    className={`flex h-48 w-48 items-center justify-center rounded-full bg-gradient-to-br ${scoreStyle.ring} p-[2px] sm:h-56 sm:w-56`}
+                  >
+                    <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-black text-center">
+                      <div className="text-5xl font-bold leading-none sm:text-6xl">
+                        {totalScore}
+                      </div>
+                      <div className="mt-2 text-xs uppercase tracking-[0.22em] text-zinc-400">
+                        Saved Score
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <FeatureCard
+                label="Profile"
+                value={profile}
+                text="Your main nervous system pattern."
+              />
+              <FeatureCard
+                label="Primary issue"
+                value={primaryIssue}
+                text="The area that may need the most support right now."
+              />
+              <FeatureCard
+                label="Strongest area"
+                value={getCategoryLabel(strongest.key)}
+                text={`${strongest.value}/100`}
+              />
+              <FeatureCard
+                label="Weakest area"
+                value={getCategoryLabel(weakest.key)}
+                text={`${weakest.value}/100`}
+              />
+            </div>
+
+            <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
+              <h2 className="text-lg font-semibold sm:text-xl">What happens next</h2>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <StepCard
+                  step="1"
+                  title="Check your email"
+                  text="Your saved report and next-step guide can be delivered to your inbox."
+                />
+                <StepCard
+                  step="2"
+                  title="Review your routine"
+                  text="Use the routine below as your immediate starting point."
+                />
+                <StepCard
+                  step="3"
+                  title="Build consistency"
+                  text="Small daily regulation practices can improve balance over time."
+                />
+              </div>
+            </section>
+
+            <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
+              <h2 className="text-lg font-semibold sm:text-xl">
+                Recommended nervous system routine
+              </h2>
+
+              <p className="mt-3 text-sm leading-7 text-zinc-300 sm:text-base">
+                Based on your result, these are the most relevant starting points right now.
+              </p>
+
+              <div className="mt-5 grid gap-3 lg:grid-cols-3">
+                {routine.map((item) => (
+                  <RoutineCard
+                    key={item.title}
+                    title={item.title}
+                    duration={item.duration}
+                    text={item.text}
+                  />
+                ))}
+              </div>
+            </section>
+
+            <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
+              <h2 className="text-lg font-semibold sm:text-xl">Continue your journey</h2>
+
+              <p className="mt-3 text-sm leading-7 text-zinc-300 sm:text-base">
+                Keep building your nervous system baseline with education, routines, and consistent recovery practices.
+              </p>
+
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <a
+                  href="/"
+                  className="rounded-xl bg-white px-5 py-4 text-center text-base font-medium text-black transition hover:bg-zinc-200"
+                >
+                  Learn how Neuvago works
+                </a>
+
+                <button
+                  onClick={resetTest}
+                  className="rounded-xl border border-zinc-700 px-5 py-4 text-base text-white transition hover:border-zinc-500"
+                >
+                  Retake test
+                </button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    )
   }
 
   if (finished) {
@@ -918,6 +1061,26 @@ function RoutineCard({
         </span>
       </div>
       <p className="mt-3 text-sm leading-6 text-zinc-400">{text}</p>
+    </div>
+  )
+}
+
+function StepCard({
+  step,
+  title,
+  text,
+}: {
+  step: string
+  title: string
+  text: string
+}) {
+  return (
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm font-semibold text-black">
+        {step}
+      </div>
+      <div className="mt-3 text-base font-semibold text-white">{title}</div>
+      <div className="mt-2 text-sm leading-6 text-zinc-400">{text}</div>
     </div>
   )
 }
