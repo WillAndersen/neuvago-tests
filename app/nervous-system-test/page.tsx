@@ -365,6 +365,117 @@ export default function NervousSystemTest() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
   }
 
+  function getScoreColorClasses(score: number) {
+    if (score <= 39) {
+      return {
+        ring: "from-rose-500 to-orange-400",
+        glow: "shadow-[0_0_40px_rgba(244,63,94,0.18)]",
+      }
+    }
+    if (score <= 59) {
+      return {
+        ring: "from-amber-400 to-orange-400",
+        glow: "shadow-[0_0_40px_rgba(251,191,36,0.18)]",
+      }
+    }
+    if (score <= 79) {
+      return {
+        ring: "from-lime-400 to-emerald-400",
+        glow: "shadow-[0_0_40px_rgba(74,222,128,0.18)]",
+      }
+    }
+    return {
+      ring: "from-emerald-400 to-cyan-400",
+      glow: "shadow-[0_0_40px_rgba(52,211,153,0.2)]",
+    }
+  }
+
+  function getPrimaryIssue(scores: CategoryScores) {
+    const entries = Object.entries(scores) as [Category, number][]
+    const sorted = [...entries].sort((a, b) => a[1] - b[1])
+    return getCategoryLabel(sorted[0][0])
+  }
+
+  function getRecommendedRoutine(scores: CategoryScores) {
+    if (scores.sleep < 40) {
+      return [
+        {
+          title: "Morning reset",
+          duration: "2 minutes",
+          text: "Start the day with a short calming routine to reduce carryover stress and help the body wake up in a more regulated state.",
+        },
+        {
+          title: "Midday stress reset",
+          duration: "1–3 minutes",
+          text: "Use a short reset during the day to interrupt tension buildup and reduce nervous system overload.",
+        },
+        {
+          title: "Evening calming routine",
+          duration: "5 minutes",
+          text: "Prioritize down-regulation before bed to help your body transition more smoothly toward sleep and recovery.",
+        },
+      ]
+    }
+
+    if (scores.vagal_tone < 45) {
+      return [
+        {
+          title: "Morning vagal activation",
+          duration: "2 minutes",
+          text: "Begin the day with gentle stimulation or slow breathing to support parasympathetic tone and body awareness.",
+        },
+        {
+          title: "Midday regulation break",
+          duration: "1–3 minutes",
+          text: "Use a short recovery window during the day to reduce activation and bring your body back toward baseline.",
+        },
+        {
+          title: "Evening body reset",
+          duration: "5 minutes",
+          text: "Finish the day with a calming routine that supports recovery, digestion, and deeper relaxation.",
+        },
+      ]
+    }
+
+    if (scores.stress < 45 && scores.recovery < 45) {
+      return [
+        {
+          title: "Morning calm baseline",
+          duration: "2 minutes",
+          text: "Start the day by lowering background activation and giving your nervous system a steadier baseline.",
+        },
+        {
+          title: "Midday nervous system reset",
+          duration: "1–3 minutes",
+          text: "Interrupt accumulated stress before it spills into the rest of the day.",
+        },
+        {
+          title: "Evening downshift",
+          duration: "5 minutes",
+          text: "Help the body leave stress mode and move more fully into repair and recovery.",
+        },
+      ]
+    }
+
+    return [
+      {
+        title: "Morning reset",
+        duration: "2 minutes",
+        text: "Begin the day with a short regulating routine that supports calm focus and nervous system balance.",
+      },
+      {
+        title: "Midday reset",
+        duration: "1–3 minutes",
+        text: "A short reset helps prevent accumulated stress and supports better regulation across the day.",
+      },
+      {
+        title: "Evening calming routine",
+        duration: "5 minutes",
+        text: "Support deeper recovery in the evening and help the body transition toward rest.",
+      },
+    ]
+  }
+
   async function handleGetGuide() {
     if (!validateEmail(email.trim())) {
       setEmailError("Please enter a valid email address.")
@@ -421,48 +532,138 @@ export default function NervousSystemTest() {
     const profile = getProfile(categoryScores)
     const insight = getPersonalizedInsight(categoryScores)
     const { strongest, weakest } = getStrongestAndWeakest(categoryScores)
+    const primaryIssue = getPrimaryIssue(categoryScores)
+    const routine = getRecommendedRoutine(categoryScores)
+    const scoreStyle = getScoreColorClasses(totalScore)
+    const stressRecoveryPosition = Math.max(
+      0,
+      Math.min(
+        100,
+        Math.round((categoryScores.recovery - categoryScores.stress + 100) / 2)
+      )
+    )
 
     return (
       <main className="min-h-screen bg-black px-4 py-6 text-white sm:px-6 sm:py-10">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <div className="rounded-[28px] border border-zinc-800 bg-zinc-950 p-5 shadow-2xl sm:p-8">
             <p className="mb-2 text-sm text-zinc-500">Neuvago Test Result</p>
 
-            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-              Your Nervous System Score
-            </h1>
+            <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+              <div>
+                <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+                  Your Nervous System Score
+                </h1>
 
-            <div className="mt-4 text-6xl font-bold leading-none sm:text-7xl">
-              {totalScore}
+                <p className="mt-4 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+                  A personalized estimate of how balanced your nervous system may currently be across stress, recovery, sleep, autonomic balance, and vagal tone.
+                </p>
+
+                <div className="mt-6 inline-flex rounded-full border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-200">
+                  {level}
+                </div>
+              </div>
+
+              <div className="flex justify-center lg:justify-end">
+                <div className={`relative ${scoreStyle.glow}`}>
+                  <div
+                    className={`flex h-56 w-56 items-center justify-center rounded-full bg-gradient-to-br ${scoreStyle.ring} p-[2px] sm:h-64 sm:w-64`}
+                  >
+                    <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-black text-center">
+                      <div className="text-6xl font-bold leading-none sm:text-7xl">
+                        {totalScore}
+                      </div>
+                      <div className="mt-2 text-sm uppercase tracking-[0.2em] text-zinc-400">
+                        Score
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="mt-4 inline-flex rounded-full border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-200">
-              {level}
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <FeatureCard
+                label="Profile"
+                value={profile}
+                text="Your primary nervous system pattern based on how your answers cluster."
+              />
+              <FeatureCard
+                label="Primary issue"
+                value={primaryIssue}
+                text="The area that may currently benefit most from focused support."
+              />
+              <FeatureCard
+                label="Strongest area"
+                value={getCategoryLabel(strongest.key)}
+                text={`${strongest.value}/100`}
+              />
             </div>
 
-            <div className="mt-4 text-base text-zinc-300 sm:text-lg">
-              Profile: {profile}
-            </div>
+            <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
+              <h2 className="text-lg font-semibold sm:text-xl">
+                Your nervous system profile
+              </h2>
 
-            <p className="mt-5 max-w-3xl text-base leading-7 text-zinc-200 sm:text-lg">
-              {insight}
-            </p>
+              <p className="mt-3 text-base leading-7 text-zinc-200 sm:text-lg">
+                {insight}
+              </p>
 
-            <p className="mt-4 max-w-3xl text-sm leading-6 text-zinc-400 sm:text-base">
-              Your score estimates how balanced your autonomic nervous system may currently be.
-              Higher scores generally reflect better stress regulation, recovery, sleep quality,
-              autonomic balance, and vagal tone.
-            </p>
+              <p className="mt-4 text-sm leading-6 text-zinc-400 sm:text-base">
+                Higher scores generally reflect better stress regulation, recovery,
+                sleep quality, autonomic balance, and vagal tone.
+              </p>
+            </section>
 
-            <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
-              <ScoreCard title="Stress" value={categoryScores.stress} label={scoreLabel(categoryScores.stress)} />
-              <ScoreCard title="Recovery" value={categoryScores.recovery} label={scoreLabel(categoryScores.recovery)} />
-              <ScoreCard title="Sleep" value={categoryScores.sleep} label={scoreLabel(categoryScores.sleep)} />
-              <ScoreCard title="Autonomic" value={categoryScores.autonomic_balance} label={scoreLabel(categoryScores.autonomic_balance)} />
-              <ScoreCard title="Vagal Tone" value={categoryScores.vagal_tone} label={scoreLabel(categoryScores.vagal_tone)} />
-            </div>
+            <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
+              <h2 className="text-lg font-semibold sm:text-xl">Score breakdown</h2>
 
-            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
+                <ScoreCard title="Stress" value={categoryScores.stress} label={scoreLabel(categoryScores.stress)} />
+                <ScoreCard title="Recovery" value={categoryScores.recovery} label={scoreLabel(categoryScores.recovery)} />
+                <ScoreCard title="Sleep" value={categoryScores.sleep} label={scoreLabel(categoryScores.sleep)} />
+                <ScoreCard title="Autonomic" value={categoryScores.autonomic_balance} label={scoreLabel(categoryScores.autonomic_balance)} />
+                <ScoreCard title="Vagal Tone" value={categoryScores.vagal_tone} label={scoreLabel(categoryScores.vagal_tone)} />
+              </div>
+            </section>
+
+            <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
+              <h2 className="text-lg font-semibold sm:text-xl">
+                Nervous system balance meter
+              </h2>
+
+              <p className="mt-3 text-sm leading-7 text-zinc-400 sm:text-base">
+                This compares current stress load with recovery capacity. The further to the right, the more your results suggest stronger recovery relative to stress.
+              </p>
+
+              <div className="mt-5">
+                <div className="mb-2 flex items-center justify-between text-xs uppercase tracking-[0.18em] text-zinc-500">
+                  <span>Stress dominant</span>
+                  <span>Recovery dominant</span>
+                </div>
+
+                <div className="relative h-3 rounded-full bg-gradient-to-r from-rose-500 via-zinc-700 to-emerald-400">
+                  <div
+                    className="absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-black shadow-lg"
+                    style={{ left: `${stressRecoveryPosition}%` }}
+                  />
+                </div>
+
+                <div className="mt-3 text-sm text-zinc-300">
+                  You are currently leaning slightly toward{" "}
+                  <span className="font-medium text-white">
+                    {stressRecoveryPosition < 45
+                      ? "stress activation"
+                      : stressRecoveryPosition > 55
+                      ? "recovery capacity"
+                      : "a mixed balance state"}
+                  </span>
+                  .
+                </div>
+              </div>
+            </section>
+
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <InsightCard
                 title="Strongest area"
                 value={getCategoryLabel(strongest.key)}
@@ -474,6 +675,27 @@ export default function NervousSystemTest() {
                 detail={`${weakest.value}/100`}
               />
             </div>
+
+            <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
+              <h2 className="text-lg font-semibold sm:text-xl">
+                Recommended nervous system routine
+              </h2>
+
+              <p className="mt-3 text-sm leading-7 text-zinc-300 sm:text-base">
+                Based on your results, your nervous system may benefit from small daily regulation practices that help shift the body from stress activation into recovery states.
+              </p>
+
+              <div className="mt-5 grid gap-3 lg:grid-cols-3">
+                {routine.map((item) => (
+                  <RoutineCard
+                    key={item.title}
+                    title={item.title}
+                    duration={item.duration}
+                    text={item.text}
+                  />
+                ))}
+              </div>
+            </section>
 
             <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
               <h3 className="text-lg font-semibold sm:text-xl">What this may suggest</h3>
@@ -656,6 +878,46 @@ function InsightCard({
       <div className="text-xs text-zinc-500 sm:text-sm">{title}</div>
       <div className="mt-2 text-xl font-semibold leading-snug sm:text-2xl">{value}</div>
       <div className="mt-2 text-sm text-zinc-300">{detail}</div>
+    </div>
+  )
+}
+
+function FeatureCard({
+  label,
+  value,
+  text,
+}: {
+  label: string
+  value: string
+  text: string
+}) {
+  return (
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-4">
+      <div className="text-xs uppercase tracking-[0.18em] text-zinc-500">{label}</div>
+      <div className="mt-2 text-xl font-semibold text-white">{value}</div>
+      <div className="mt-2 text-sm leading-6 text-zinc-400">{text}</div>
+    </div>
+  )
+}
+
+function RoutineCard({
+  title,
+  duration,
+  text,
+}: {
+  title: string
+  duration: string
+  text: string
+}) {
+  return (
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4">
+      <div className="flex items-center justify-between gap-3">
+        <h4 className="text-base font-semibold text-white">{title}</h4>
+        <span className="rounded-full border border-zinc-700 bg-zinc-950 px-3 py-1 text-xs text-zinc-300">
+          {duration}
+        </span>
+      </div>
+      <p className="mt-3 text-sm leading-6 text-zinc-400">{text}</p>
     </div>
   )
 }
