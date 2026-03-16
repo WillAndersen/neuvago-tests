@@ -423,322 +423,192 @@ export default function NervousSystemTest() {
     const { strongest, weakest } = getStrongestAndWeakest(categoryScores)
 
     return (
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: 40, color: "white" }}>
-        <div
-          style={{
-            background: "#111",
-            border: "1px solid #2a2a2a",
-            borderRadius: 24,
-            padding: 32,
-          }}
-        >
-          <p style={{ color: "#999", marginBottom: 8 }}>Neuvago Test Result</p>
-          <h1 style={{ fontSize: 42, marginBottom: 10 }}>Your Nervous System Score</h1>
+      <main className="min-h-screen bg-black px-4 py-6 text-white sm:px-6 sm:py-10">
+        <div className="mx-auto max-w-5xl">
+          <div className="rounded-[28px] border border-zinc-800 bg-zinc-950 p-5 shadow-2xl sm:p-8">
+            <p className="mb-2 text-sm text-zinc-500">Neuvago Test Result</p>
 
-          <div style={{ fontSize: 72, fontWeight: 700, lineHeight: 1, marginBottom: 16 }}>
-            {totalScore}
-          </div>
+            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+              Your Nervous System Score
+            </h1>
 
-          <div
-            style={{
-              display: "inline-block",
-              padding: "8px 14px",
-              borderRadius: 999,
-              background: "#1e1e1e",
-              border: "1px solid #333",
-              marginBottom: 12,
-            }}
-          >
-            {level}
-          </div>
-
-          <div style={{ display: "block", color: "#bdbdbd", marginBottom: 20, fontSize: 18 }}>
-            Profile: {profile}
-          </div>
-
-          <p style={{ color: "#cfcfcf", fontSize: 18, lineHeight: 1.7, marginBottom: 18 }}>
-            {insight}
-          </p>
-
-          <p style={{ color: "#a3a3a3", fontSize: 16, lineHeight: 1.6 }}>
-            Your score estimates how balanced your autonomic nervous system may currently be. Higher scores generally reflect better stress regulation, recovery, sleep quality, autonomic balance, and vagal tone.
-          </p>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(5, 1fr)",
-              gap: 14,
-              marginTop: 30,
-            }}
-          >
-            <ScoreCard title="Stress" value={categoryScores.stress} label={scoreLabel(categoryScores.stress)} />
-            <ScoreCard title="Recovery" value={categoryScores.recovery} label={scoreLabel(categoryScores.recovery)} />
-            <ScoreCard title="Sleep" value={categoryScores.sleep} label={scoreLabel(categoryScores.sleep)} />
-            <ScoreCard
-              title="Autonomic"
-              value={categoryScores.autonomic_balance}
-              label={scoreLabel(categoryScores.autonomic_balance)}
-            />
-            <ScoreCard title="Vagal Tone" value={categoryScores.vagal_tone} label={scoreLabel(categoryScores.vagal_tone)} />
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: 14,
-              marginTop: 20,
-            }}
-          >
-            <InsightCard
-              title="Strongest area"
-              value={getCategoryLabel(strongest.key)}
-              detail={`${strongest.value}/100`}
-            />
-            <InsightCard
-              title="Weakest area"
-              value={getCategoryLabel(weakest.key)}
-              detail={`${weakest.value}/100`}
-            />
-          </div>
-
-          <div
-            style={{
-              marginTop: 30,
-              padding: 20,
-              background: "#171717",
-              border: "1px solid #2d2d2d",
-              borderRadius: 16,
-            }}
-          >
-            <h3 style={{ marginTop: 0, marginBottom: 12 }}>What this may suggest</h3>
-            <p style={{ color: "#c9c9c9", lineHeight: 1.7, margin: 0 }}>
-              Lower scores may reflect higher stress load, weaker recovery, reduced parasympathetic activity, or sleep disruption. Higher scores may reflect stronger resilience and better day-to-day nervous system regulation.
-            </p>
-          </div>
-
-          <div
-            style={{
-              marginTop: 30,
-              padding: 20,
-              background: "#171717",
-              border: "1px solid #2d2d2d",
-              borderRadius: 16,
-            }}
-          >
-            <h3 style={{ marginTop: 0, marginBottom: 12 }}>
-              Unlock your personalized nervous system report
-            </h3>
-
-            <p style={{ color: "#c9c9c9", lineHeight: 1.7, marginTop: 0, marginBottom: 14 }}>
-              Enter your email to unlock:
-            </p>
-
-            <ul
-              style={{
-                color: "#c9c9c9",
-                lineHeight: 1.8,
-                paddingLeft: 20,
-                marginTop: 0,
-                marginBottom: 14,
-              }}
-            >
-              <li>your full nervous system interpretation</li>
-              <li>recommended vagus nerve routines</li>
-              <li>stress regulation exercises</li>
-              <li>sleep recovery techniques</li>
-            </ul>
-
-            <p style={{ color: "#8c8c8c", lineHeight: 1.6, marginTop: 0 }}>
-              Your test result will also be saved so you can track changes later.
-            </p>
-
-            <div style={{ display: "flex", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
-              <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email address"
-                type="email"
-                style={{
-                  flex: "1 1 280px",
-                  padding: 16,
-                  background: "#1b1b1b",
-                  border: "1px solid #333",
-                  borderRadius: 12,
-                  color: "white",
-                  fontSize: 16,
-                  boxSizing: "border-box",
-                }}
-              />
-
-              <button
-                onClick={handleGetGuide}
-                disabled={isSaving}
-                style={{
-                  padding: "14px 24px",
-                  fontSize: 16,
-                  background: "white",
-                  color: "black",
-                  borderRadius: 10,
-                  border: "none",
-                  cursor: isSaving ? "not-allowed" : "pointer",
-                  opacity: isSaving ? 0.7 : 1,
-                }}
-              >
-                {isSaving ? "Saving..." : "Unlock my report"}
-              </button>
+            <div className="mt-4 text-6xl font-bold leading-none sm:text-7xl">
+              {totalScore}
             </div>
 
-            {emailError ? (
-              <p style={{ color: "#ff8b8b", marginTop: 10 }}>{emailError}</p>
-            ) : null}
+            <div className="mt-4 inline-flex rounded-full border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-200">
+              {level}
+            </div>
 
-            {guideRequested ? (
-              <p style={{ color: "#9be7a5", marginTop: 12 }}>
-                Thanks — your email and result have been saved.
+            <div className="mt-4 text-base text-zinc-300 sm:text-lg">
+              Profile: {profile}
+            </div>
+
+            <p className="mt-5 max-w-3xl text-base leading-7 text-zinc-200 sm:text-lg">
+              {insight}
+            </p>
+
+            <p className="mt-4 max-w-3xl text-sm leading-6 text-zinc-400 sm:text-base">
+              Your score estimates how balanced your autonomic nervous system may currently be.
+              Higher scores generally reflect better stress regulation, recovery, sleep quality,
+              autonomic balance, and vagal tone.
+            </p>
+
+            <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
+              <ScoreCard title="Stress" value={categoryScores.stress} label={scoreLabel(categoryScores.stress)} />
+              <ScoreCard title="Recovery" value={categoryScores.recovery} label={scoreLabel(categoryScores.recovery)} />
+              <ScoreCard title="Sleep" value={categoryScores.sleep} label={scoreLabel(categoryScores.sleep)} />
+              <ScoreCard title="Autonomic" value={categoryScores.autonomic_balance} label={scoreLabel(categoryScores.autonomic_balance)} />
+              <ScoreCard title="Vagal Tone" value={categoryScores.vagal_tone} label={scoreLabel(categoryScores.vagal_tone)} />
+            </div>
+
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <InsightCard
+                title="Strongest area"
+                value={getCategoryLabel(strongest.key)}
+                detail={`${strongest.value}/100`}
+              />
+              <InsightCard
+                title="Weakest area"
+                value={getCategoryLabel(weakest.key)}
+                detail={`${weakest.value}/100`}
+              />
+            </div>
+
+            <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
+              <h3 className="text-lg font-semibold sm:text-xl">What this may suggest</h3>
+              <p className="mt-3 text-sm leading-7 text-zinc-300 sm:text-base">
+                Lower scores may reflect higher stress load, weaker recovery, reduced parasympathetic activity, or sleep disruption. Higher scores may reflect stronger resilience and better day-to-day nervous system regulation.
               </p>
-            ) : null}
-          </div>
+            </section>
 
-          <div style={{ display: "flex", gap: 12, marginTop: 30, flexWrap: "wrap" }}>
-            <button
-              onClick={resetTest}
-              style={{
-                padding: "14px 28px",
-                fontSize: 16,
-                background: "transparent",
-                color: "white",
-                borderRadius: 10,
-                border: "1px solid #333",
-                cursor: "pointer",
-              }}
-            >
-              Retake test
-            </button>
+            <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
+              <h3 className="text-lg font-semibold sm:text-xl">
+                Unlock your personalized nervous system report
+              </h3>
+
+              <p className="mt-3 text-sm leading-7 text-zinc-300 sm:text-base">
+                Enter your email to unlock:
+              </p>
+
+              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-7 text-zinc-300 sm:text-base">
+                <li>your full nervous system interpretation</li>
+                <li>recommended vagus nerve routines</li>
+                <li>stress regulation exercises</li>
+                <li>sleep recovery techniques</li>
+              </ul>
+
+              <p className="mt-3 text-sm leading-6 text-zinc-500">
+                Your test result will also be saved so you can track changes later.
+              </p>
+
+              <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
+                <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email address"
+                  type="email"
+                  className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-4 text-base text-white outline-none placeholder:text-zinc-500 focus:border-zinc-500"
+                />
+
+                <button
+                  onClick={handleGetGuide}
+                  disabled={isSaving}
+                  className="rounded-xl bg-white px-6 py-4 text-base font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isSaving ? "Saving..." : "Unlock my report"}
+                </button>
+              </div>
+
+              {emailError ? (
+                <p className="mt-3 text-sm text-rose-400">{emailError}</p>
+              ) : null}
+
+              {guideRequested ? (
+                <p className="mt-3 text-sm text-emerald-400">
+                  Thanks — your email and result have been saved.
+                </p>
+              ) : null}
+            </section>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button
+                onClick={resetTest}
+                className="w-full rounded-xl border border-zinc-700 px-5 py-4 text-base text-white transition hover:border-zinc-500 sm:w-auto"
+              >
+                Retake test
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     )
   }
 
   return (
-    <div style={{ maxWidth: 760, margin: "0 auto", padding: 40, color: "white" }}>
-      <div
-        style={{
-          background: "#111",
-          border: "1px solid #2a2a2a",
-          borderRadius: 24,
-          padding: 32,
-        }}
-      >
-        <p style={{ color: "#999", marginBottom: 8 }}>Neuvago Test</p>
-        <h1 style={{ fontSize: 42, marginBottom: 10 }}>Nervous System Test</h1>
-        <p style={{ color: "#bdbdbd", marginBottom: 8 }}>
-          Question {step + 1} of {questions.length}
-        </p>
+    <main className="min-h-screen bg-black px-4 py-6 text-white sm:px-6 sm:py-10">
+      <div className="mx-auto max-w-4xl">
+        <div className="rounded-[28px] border border-zinc-800 bg-zinc-950 p-5 shadow-2xl sm:p-8">
+          <p className="mb-2 text-sm text-zinc-500">Neuvago Test</p>
 
-        <p style={{ color: "#8c8c8c", marginTop: 0, marginBottom: 24 }}>
-          Most people complete this test in under 2 minutes
-        </p>
+          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+            Nervous System Test
+          </h1>
 
-        <div
-          style={{
-            width: "100%",
-            height: 10,
-            background: "#222",
-            borderRadius: 999,
-            overflow: "hidden",
-            marginBottom: 28,
-          }}
-        >
-          <div
-            style={{
-              width: `${progress}%`,
-              height: "100%",
-              background: "white",
-              transition: "width 0.25s ease",
-            }}
-          />
-        </div>
-
-        <p style={{ fontSize: 30, lineHeight: 1.35, marginBottom: 12 }}>
-          {questions[step].text}
-        </p>
-
-        {questions[step].help && (
-          <p
-            style={{
-              color: "#9a9a9a",
-              fontSize: 16,
-              lineHeight: 1.6,
-              marginTop: 0,
-              marginBottom: 24,
-            }}
-          >
-            {questions[step].help}
+          <p className="mt-4 text-base text-zinc-300">
+            Question {step + 1} of {questions.length}
           </p>
-        )}
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(5, 1fr)",
-            gap: 12,
-          }}
-        >
-          {answerLabels.map((option) => (
+          <p className="mt-1 text-sm text-zinc-500">
+            Most people complete this test in under 2 minutes
+          </p>
+
+          <div className="mt-6 h-2.5 w-full overflow-hidden rounded-full bg-zinc-800">
+            <div
+              className="h-full rounded-full bg-white transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          <p className="mt-8 text-[2rem] font-medium leading-tight tracking-tight sm:text-[2.35rem]">
+            {questions[step].text}
+          </p>
+
+          {questions[step].help && (
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-zinc-400 sm:text-base">
+              {questions[step].help}
+            </p>
+          )}
+
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {answerLabels.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => answer(option.value)}
+                className="min-h-[72px] rounded-2xl border border-zinc-800 bg-zinc-900 px-3 py-4 text-sm font-medium text-white transition hover:border-zinc-600 hover:bg-zinc-800 sm:text-base"
+              >
+                {option.short}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-5 flex flex-col gap-2 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
+            <span>Choose the answer that fits best</span>
+            <span>{progress}% complete</span>
+          </div>
+
+          <div className="mt-5">
             <button
-              key={option.value}
-              onClick={() => answer(option.value)}
-              style={{
-                padding: "18px 8px",
-                fontSize: 16,
-                background: "#1b1b1b",
-                color: "white",
-                border: "1px solid #333",
-                borderRadius: 12,
-                cursor: "pointer",
-                minHeight: 72,
-              }}
+              onClick={goBack}
+              disabled={step === 0}
+              className="w-full rounded-xl border border-zinc-800 px-5 py-3 text-sm text-white transition hover:border-zinc-600 disabled:cursor-not-allowed disabled:text-zinc-600 sm:w-auto"
             >
-              {option.short}
+              Back
             </button>
-          ))}
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: 18,
-            color: "#9a9a9a",
-            fontSize: 14,
-          }}
-        >
-          <span>Choose the answer that fits best</span>
-          <span>{progress}% complete</span>
-        </div>
-
-        <div style={{ marginTop: 20 }}>
-          <button
-            onClick={goBack}
-            disabled={step === 0}
-            style={{
-              padding: "12px 18px",
-              fontSize: 15,
-              background: "transparent",
-              color: step === 0 ? "#666" : "white",
-              borderRadius: 10,
-              border: "1px solid #333",
-              cursor: step === 0 ? "not-allowed" : "pointer",
-            }}
-          >
-            Back
-          </button>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 
@@ -752,17 +622,10 @@ function ScoreCard({
   label: string
 }) {
   return (
-    <div
-      style={{
-        background: "#171717",
-        border: "1px solid #2d2d2d",
-        borderRadius: 16,
-        padding: 16,
-      }}
-    >
-      <div style={{ color: "#999", fontSize: 14, marginBottom: 8 }}>{title}</div>
-      <div style={{ fontSize: 30, fontWeight: 700 }}>{value}</div>
-      <div style={{ color: "#bdbdbd", marginTop: 6 }}>{label}</div>
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4">
+      <div className="text-xs text-zinc-500 sm:text-sm">{title}</div>
+      <div className="mt-2 text-3xl font-bold sm:text-4xl">{value}</div>
+      <div className="mt-2 text-sm text-zinc-300">{label}</div>
     </div>
   )
 }
@@ -777,17 +640,10 @@ function InsightCard({
   detail: string
 }) {
   return (
-    <div
-      style={{
-        background: "#171717",
-        border: "1px solid #2d2d2d",
-        borderRadius: 16,
-        padding: 18,
-      }}
-    >
-      <div style={{ color: "#999", fontSize: 14, marginBottom: 8 }}>{title}</div>
-      <div style={{ fontSize: 24, fontWeight: 600 }}>{value}</div>
-      <div style={{ color: "#bdbdbd", marginTop: 6 }}>{detail}</div>
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4">
+      <div className="text-xs text-zinc-500 sm:text-sm">{title}</div>
+      <div className="mt-2 text-xl font-semibold leading-snug sm:text-2xl">{value}</div>
+      <div className="mt-2 text-sm text-zinc-300">{detail}</div>
     </div>
   )
 }
