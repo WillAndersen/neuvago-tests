@@ -482,7 +482,10 @@ export default function NervousSystemTest() {
               </p>
             </section>
 
-            <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
+            <section
+              id="unlock-report"
+              className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5"
+            >
               <h3 className="text-lg font-semibold sm:text-xl">
                 Unlock your personalized nervous system report
               </h3>
@@ -540,6 +543,15 @@ export default function NervousSystemTest() {
               </button>
             </div>
           </div>
+        </div>
+
+        <div className="fixed inset-x-0 bottom-0 z-50 border-t border-zinc-800 bg-black/90 p-3 backdrop-blur sm:hidden">
+          <a
+            href="#unlock-report"
+            className="block w-full rounded-xl bg-white px-5 py-4 text-center text-base font-medium text-black"
+          >
+            Unlock my full report
+          </a>
         </div>
       </main>
     )
